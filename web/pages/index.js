@@ -15,22 +15,22 @@ export default function HomePage({ events }) {
         <h3>No events to show</h3>
       }
 
-      {events.map(evt => (
-        <EventItem key={evt.id} event={evt} />
-      ))}
+      {/* {events.map(evt => (
+         <EventItem key={evt.id} event={evt} />
+      ))} */}
 
-      {events.length > 0 && (
+      {/* {events.length > 0 && (
         <Link href={`/events`}>
           <a className="btn-secondary">View all events</a>
         </Link>
-      )}
+      )} */}
 
     </Layout>
   )
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/api/events`)
+  const res = await fetch(`${API_URL}/events`)
   const events = await res.json()
 
   return {
