@@ -2,64 +2,56 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify'
+import moment from 'moment'
+import { FaImage } from 'react-icons/fa'
 
 import Layout from '@/components/Layout'
+import Modal from '@/components/Modal'
 
 import styles from '@/styles/Form.module.css'
 
 import { API_URL } from '@/config/index'
 
-export default function AddNewEvent() {
-  const [values, setValues] = useState({
-    name: '',
-    performers: '',
-    venue: '',
-    address: '',
-    date: '',
-    time: '',
-    description: ''
-  })
+export default function AddNewEvent({ event }) {
+  const [values, setValues] = useState(event)
+  const [showModal, setShowModal] = useState(false)
 
   const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const hasEmptyValue = Object.values(values).some(v => !v || v === '')
-
-    if (hasEmptyValue) {
-      toast.error('Please fill in all fields')
-    }
-
-    const res = await fetch(`${API_URL}/events`, {
-      method: 'POST',
+    const res = await fetch(`${API_URL}/events/${event.id}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(values)
     })
 
-    const event = await res.json()
+    const data = await res.json()
 
     if (!res.ok) {
-      toast.error(data.message)      
+      toast.error(data.message)
+
+    } else {
+      router.push('/events')
     }
-    else {
-      router.push(`/events/${event.slug}`)
-    }
+
   }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-
     setValues(oldValues => ({ ...oldValues, [name]: value }))
   }
+
+  console.log(values.date)
 
   return (
     <Layout title="Add new event" >
       <Link href="/events">GoBack</Link>
 
-      <h1>Add event</h1>
+      <h1>Edit event</h1>
       <ToastContainer />
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -110,7 +102,7 @@ export default function AddNewEvent() {
               type='date'
               name='date'
               id='date'
-              value={values.date}
+              value={moment(values.date).format('yyyy-MM-DD')}
               onChange={handleInputChange}
             />
           </div>
@@ -137,10 +129,48 @@ export default function AddNewEvent() {
           ></textarea>
         </div>
 
-        <input type='submit' value='Add Event' className='btn' />
+        <input type='submit' value='Update Event' className='btn' />
       </form>
+
+
+
+      {values.image ? (
+        <>
+          <h2>Event image</h2>
+          <img src={values.image.formats.thumbnail.url} />
+        </>
+      ) : (
+        <h2>Event has no image</h2>
+      )}
+
+      <div>
+        <button className="btn-secondary" onClick={() => setShowModal(true)}>
+          <FaImage /> Set Image
+        </button>
+      </div>
+
+      {/* title, show, onClose, childrens */}
+
+      <Modal show={showModal} onClose={() => showModal(false)} >
+        Something Something Something Something
+        Something Something Something Something
+        Something Something Something Something
+      </Modal>
 
     </Layout >
   )
 }
 
+
+export async function getServerSideProps(context) {
+  const { id } = context.query
+
+  const res = await fetch(`${API_URL}/events/${id}`)
+  const event = await res.json(0)
+
+  return {
+    props: {
+      event
+    }
+  }
+}

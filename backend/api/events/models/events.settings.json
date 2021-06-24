@@ -2,7 +2,8 @@
   "kind": "collectionType",
   "collectionName": "events",
   "info": {
-    "name": "events"
+    "name": "events",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -14,27 +15,17 @@
     "name": {
       "type": "string"
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "name"
-    },
     "venue": {
       "type": "string"
     },
     "address": {
       "type": "string"
     },
-    "date": {
-      "type": "datetime"
-    },
     "time": {
       "type": "string"
     },
     "performers": {
       "type": "string"
-    },
-    "description": {
-      "type": "richtext"
     },
     "image": {
       "model": "file",
@@ -47,6 +38,16 @@
       "plugin": "upload",
       "required": false,
       "pluginOptions": {}
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
     },
     "user": {
       "plugin": "users-permissions",

@@ -34,8 +34,6 @@ export default function HomePage({ events }) {
 }
 
 export async function getServerSideProps(context) {
-  console.log('aqui', context.query)
-
   const { term } = context.query
 
   const query = qs.stringify({
