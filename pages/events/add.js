@@ -155,6 +155,16 @@ export default function AddNewEvent({ token }) {
 export async function getServerSideProps(context) {
   const { token } = parseCookies(context.req)
 
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/account/login',
+        permanent: false
+      }
+    }
+  }
+
+
   return {
     props: {
       token: token || null

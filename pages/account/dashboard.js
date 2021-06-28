@@ -49,6 +49,15 @@ export default function Dashboard({ events, token }) {
 export async function getServerSideProps(context) {
   const { token } = parseCookies(context.req)
 
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/account/login',
+        permanent: false
+      }
+    }
+  }
+
   const res = await fetch(`${API_URL}/events/me`, {
     method: 'GET',
     headers: {
